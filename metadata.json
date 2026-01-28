@@ -1,0 +1,5 @@
+{
+  "name": "@menteora/vsai-ui-react",
+  "description": "A high-end, professional React component library with built-in Mock Runner for browser-based functional testing.",
+  "requestFramePermissions": []
+}
