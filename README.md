@@ -1,20 +1,52 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# @menteora/vsai-ui-react
 
-# Run and deploy your AI Studio app
+Una libreria di componenti React di alta qualità, progettata con un'estetica professionale e un'architettura **AI-Native**. 
 
-This contains everything you need to run your app locally.
+## ✨ Caratteristiche Principali
 
-View your app in AI Studio: https://ai.studio/apps/drive/1M6USC7dmjNdr9uzUyy1zzTzDQHIdup4y
+- 💎 **Estetica High-End**: Design moderno con effetti Frosted Glass, ombreggiature morbide e icone Lucide integrate.
+- 🌓 **Supporto Temi**: Supporto nativo per modalità Light e Dark su ogni componente.
+- 🚀 **Modulare & Leggera**: Esportazioni singole per favorire il tree-shaking e minimizzare il bundle size.
+- 🤖 **AI-Ready**: Ogni componente esporta metadati (`*Docs`) per permettere a modelli linguistici (LLM) di comprendere e generare codice corretto dinamicamente.
+- 📱 **Fully Responsive**: Componenti complessi (come `VSAITable`) si adattano automaticamente ai dispositivi mobile.
 
-## Run Locally
+## 📦 Installazione
 
-**Prerequisites:**  Node.js
+```bash
+npm install @menteora/vsai-ui-react
+```
 
+## 🚀 Quick Start
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```tsx
+import { VSAIButton, VSAIToolbar } from '@menteora/vsai-ui-react';
+
+const App = () => (
+  <>
+    <VSAIToolbar title="My Professional App" theme="light" />
+    <main className="p-8">
+      <VSAIButton 
+        label="Inizia Ora" 
+        variant="primary" 
+        onClick={() => console.log('Action!')} 
+      />
+    </main>
+  </>
+);
+```
+
+## 🛠 Sviluppo e Build
+
+La libreria utilizza `tsup` per una compilazione ultra-veloce e generazione di definizioni TypeScript.
+
+```bash
+npm run build # Genera la cartella /dist con formati ESM e CJS
+npm run dev   # Avvia la modalità watch per lo sviluppo
+```
+
+## 🧠 Filosofia AI-Native
+
+A differenza delle librerie standard, `@menteora/vsai-ui-react` fornisce oggetti di documentazione a runtime. Esempio: `VSAILoginDocs` contiene lo schema delle props e descrizioni testuali che possono essere fornite ai prompt degli agenti AI per generare interfacce coerenti senza errori di validazione.
+
+---
+© 2024 Menteora UI Labs.
