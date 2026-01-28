@@ -1,7 +1,7 @@
 
 {
   "name": "@menteora/vsai-ui-react",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A high-end, professional React component library with built-in Mock Runner for browser-based functional testing.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "prepare": "npm run build", 
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {

@@ -1,3 +1,4 @@
+
 # @menteora/vsai-ui-react
 
 Una libreria di componenti React di alta qualità, progettata con un'estetica professionale e un'architettura **AI-Native**. 
@@ -6,14 +7,36 @@ Una libreria di componenti React di alta qualità, progettata con un'estetica pr
 
 - 💎 **Estetica High-End**: Design moderno con effetti Frosted Glass, ombreggiature morbide e icone Lucide integrate.
 - 🌓 **Supporto Temi**: Supporto nativo per modalità Light e Dark su ogni componente.
-- 🚀 **Modulare & Leggera**: Esportazioni singole per favorire il tree-shaking e minimizzare il bundle size.
-- 🤖 **AI-Ready**: Ogni componente esporta metadati (`*Docs`) per permettere a modelli linguistici (LLM) di comprendere e generare codice corretto dinamicamente.
-- 📱 **Fully Responsive**: Componenti complessi (come `VSAITable`) si adattano automaticamente ai dispositivi mobile.
+- 🚀 **Modulare & Leggera**: Esportazioni singole per favorire il tree-shaking.
+- 🤖 **AI-Ready**: Metadati (`*Docs`) esportati per l'integrazione con agenti AI.
 
 ## 📦 Installazione
 
+Puoi installare la libreria direttamente da GitHub. È necessario includere anche `lucide-react` come dipendenza:
+
 ```bash
-npm install @menteora/vsai-ui-react
+npm install github:menteora/vsai-ui-react lucide-react
+```
+
+O aggiungendola manualmente al `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@menteora/vsai-ui-react": "github:menteora/vsai-ui-react",
+    "lucide-react": "^0.475.0"
+  }
+}
+```
+
+## 🎨 Configurazione Tailwind CSS
+
+Per visualizzare correttamente gli stili dei componenti, configura Tailwind per scansionare il pacchetto nei tuoi file CSS:
+
+```css
+/* Nel tuo file globals.css o index.css */
+@import "tailwindcss";
+@source "../node_modules/@menteora/vsai-ui-react/dist";
 ```
 
 ## 🚀 Quick Start
@@ -34,19 +57,6 @@ const App = () => (
   </>
 );
 ```
-
-## 🛠 Sviluppo e Build
-
-La libreria utilizza `tsup` per una compilazione ultra-veloce e generazione di definizioni TypeScript.
-
-```bash
-npm run build # Genera la cartella /dist con formati ESM e CJS
-npm run dev   # Avvia la modalità watch per lo sviluppo
-```
-
-## 🧠 Filosofia AI-Native
-
-A differenza delle librerie standard, `@menteora/vsai-ui-react` fornisce oggetti di documentazione a runtime. Esempio: `VSAILoginDocs` contiene lo schema delle props e descrizioni testuali che possono essere fornite ai prompt degli agenti AI per generare interfacce coerenti senza errori di validazione.
 
 ---
 © 2024 Menteora UI Labs.
