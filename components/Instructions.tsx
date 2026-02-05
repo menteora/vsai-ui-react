@@ -59,13 +59,13 @@ export const Instructions: React.FC = () => {
           <p className="text-slate-600 text-sm">
             Importa i componenti singolarmente. Il supporto al tree-shaking garantisce un bundle size ottimale.
           </p>
-          <CodeBlock code={`import { VSAILogin, VSAIToolbar } from '@menteora/vsai-ui-react';
+          <CodeBlock code={`import { VSAIPageLogin, VSAIToolbar } from '@menteora/vsai-ui-react';
 
 export default function MyPage() {
   return (
     <>
       <VSAIToolbar title="VSAI Console" />
-      <VSAILogin onLogin={(e, p) => console.log(e)} />
+      <VSAIPageLogin onLogin={(e, p) => console.log(e)} />
     </>
   );
 }`} />

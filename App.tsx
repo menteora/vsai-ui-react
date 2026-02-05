@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live';
@@ -25,29 +26,33 @@ const generateLiveJSX = (componentName: string, props: Record<string, any>, prel
   const propsStrings: string[] = [];
   const currentTheme = props.theme || 'light';
   
-  const knownHandlers = ['handleValidation', 'handleLogin', 'handleNavigation', 'handleAction', 'onClose', 'onSubmit'];
+  const knownHandlers = ['handleValidation', 'handleLogin', 'handleNavigation', 'handleAction', 'onClose', 'onSubmit', 'onThemeToggle', 'toggleGlobalTheme'];
 
   Object.entries(props).forEach(([key, value]) => {
     if (value === undefined || value === null) return;
     
     if (typeof value === 'string') {
-      if (value.startsWith('{') && value.endsWith('}')) {
-        propsStrings.push(`${key}=${value}`);
+      const trimmed = value.trim();
+      if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+        // It's a JSX block or JS expression
+        propsStrings.push(`${key}=${trimmed}`);
       } else if (
-        value.includes('=>') || 
-        knownHandlers.includes(value) || 
-        value.startsWith('set') || 
+        trimmed.includes('=>') || 
+        knownHandlers.includes(trimmed) || 
+        trimmed.startsWith('set') || 
         key.startsWith('on')
       ) {
-        propsStrings.push(`${key}={${value}}`);
+        propsStrings.push(`${key}={${trimmed}}`);
       } else {
-        propsStrings.push(`${key}="${value}"`);
+        // Safe string injection using JSON.stringify to handle quotes and newlines
+        propsStrings.push(`${key}={${JSON.stringify(value)}}`);
       }
     } else if (typeof value === 'boolean') {
       if (value) propsStrings.push(`${key}`);
       else propsStrings.push(`${key}={false}`);
     } else if (typeof value === 'object') {
       const stringified = JSON.stringify(value);
+      // Clean up common string-wrapped expressions if they exist in objects
       const processed = stringified.replace(/"\{(.+?)\}"/g, (match, p1) => {
         return p1.replace(/\\"/g, '"');
       });
@@ -170,10 +175,20 @@ const App: React.FC = () => {
     return docsMap[activeTab] || VSAI.VSAILoginDocs;
   }, [activeTab]);
 
+  const toggleGlobalTheme = () => setGlobalTheme(prev => prev === 'light' ? 'dark' : 'light');
+
   const initialCode = useMemo(() => {
-    const props = { ...(activeDocs.exampleProps || {}), theme: globalTheme };
+    const props: Record<string, any> = { 
+      ...(activeDocs.exampleProps || {}), 
+      theme: globalTheme
+    };
+    
+    if ('onThemeToggle' in (activeDocs.exampleProps || {}) || activeTab === 'login' || activeTab === 'toolbar') {
+      props.onThemeToggle = 'toggleGlobalTheme';
+    }
+
     return generateLiveJSX(activeDocs.name, props, activeDocs.prelude);
-  }, [activeDocs, globalTheme]);
+  }, [activeDocs, globalTheme, activeTab]);
 
   const isFullPageComponent = activeTab === 'login' || activeTab === 'pagelayout';
 
@@ -197,7 +212,7 @@ const App: React.FC = () => {
       </header>
 
       <div className="flex flex-col gap-12">
-        <LiveProvider code={initialCode} scope={liveScope} noInline={true}>
+        <LiveProvider code={initialCode} scope={{ ...liveScope, toggleGlobalTheme }} noInline={true}>
           <section className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/40 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
                <div className="mt-1 p-2 bg-slate-900 text-white rounded-lg"><Code2 size={18} /></div>

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ToolbarItem, UserProfile, Theme, ComponentDocs } from './types';
-import { Menu, X, User as UserIcon, LogOut, Settings, LayoutDashboard, BarChart2 } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut, Settings, LayoutDashboard, BarChart2, Sun, Moon } from 'lucide-react';
 
 export interface VSAIToolbarProps {
   /** Brand name or title displayed on the left side of the toolbar. */
@@ -16,18 +16,21 @@ export interface VSAIToolbarProps {
   theme?: Theme;
   /** Callback triggered when a navigation item is clicked. */
   onAction?: (actionId: string) => void;
+  /** Callback triggered to toggle application theme. */
+  onThemeToggle?: () => void;
   /** URL of the application logo icon displayed next to the title. */
   logoUrl?: string;
 }
 
 export const VSAIToolbarDocs: ComponentDocs = {
   name: "VSAIToolbar",
-  description: "Header applicativo professionale con icone Lucide integrate per navigazione responsive ed effetti frosted glass.",
+  description: "Header applicativo professionale con icone Lucide integrate per navigazione responsive, supporto toggle tema ed effetti frosted glass.",
   props: [
     { name: 'title', type: 'string', defaultValue: '"VSAI Dashboard"', description: 'Nome del brand.' },
     { name: 'items', type: 'ToolbarItem[]', defaultValue: '[]', description: 'Voci di navigazione con icone.' },
     { name: 'user', type: 'UserProfile', defaultValue: 'undefined', description: 'Profilo utente.' },
     { name: 'theme', type: '"light" | "dark"', defaultValue: '"light"', description: 'Stile visivo.' },
+    { name: 'onThemeToggle', type: '() => void', defaultValue: 'undefined', description: 'Evento scatenato al clic sul pulsante tema.' },
     { name: 'logoUrl', type: 'string', defaultValue: '"..."', description: 'Icona del brand.' }
   ],
   prelude: `const handleNavigation = (id) => alert('Navigazione verso: ' + id);`,
@@ -44,18 +47,19 @@ export const VSAIToolbarDocs: ComponentDocs = {
       avatarUrl: 'https://picsum.photos/id/64/100/100'
     },
     sticky: true,
-    onAction: "handleNavigation"
+    onAction: "handleNavigation",
+    onThemeToggle: "toggleGlobalTheme"
   }
 };
 
 export const VSAIToolbar: React.FC<VSAIToolbarProps> = ({
   title = "VSAI Dashboard",
   items = [],
-  // Explicitly cast the default user object to UserProfile to avoid type narrowing issues with optional properties like avatarUrl
   user = { name: 'Guest', role: 'User' } as UserProfile,
   sticky = true,
   theme = 'light',
   onAction,
+  onThemeToggle,
   logoUrl = "https://picsum.photos/id/20/40/40"
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -93,8 +97,18 @@ export const VSAIToolbar: React.FC<VSAIToolbarProps> = ({
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex flex-col items-end mr-1">
+          <div className="flex items-center gap-2">
+            {onThemeToggle && (
+              <button 
+                onClick={onThemeToggle}
+                className={`p-2 rounded-xl transition-all ${isDark ? 'text-yellow-400 hover:bg-slate-800' : 'text-slate-500 hover:bg-slate-100'}`}
+                aria-label="Toggle Theme"
+              >
+                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+            )}
+            
+            <div className="hidden sm:flex flex-col items-end mr-1 ml-2">
               <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{user.name}</span>
               <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{user.role}</span>
             </div>
@@ -141,6 +155,16 @@ export const VSAIToolbar: React.FC<VSAIToolbarProps> = ({
                   {item.label}
                 </button>
               ))}
+              
+              {onThemeToggle && (
+                <button 
+                  onClick={() => { onThemeToggle(); setIsMenuOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all ${isDark ? 'text-yellow-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                  Cambia Tema ({isDark ? 'Chiaro' : 'Scuro'})
+                </button>
+              )}
             </nav>
 
             <div className={`mt-auto p-4 rounded-2xl border transition-colors ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-100 shadow-sm'}`}>

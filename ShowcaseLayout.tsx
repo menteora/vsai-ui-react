@@ -20,7 +20,7 @@ import {
   Tag
 } from 'lucide-react';
 
-type TabType = 'login' | 'toolbar' | 'table' | 'form' | 'pagelayout' | 'textinput' | 'textarea' | 'button' | 'snackbar' | 'dateinput' | 'checkbox' | 'radiobutton' | 'select' | 'switch' | 'badge' | 'instructions';
+type TabType = 'pagelogin' | 'toolbar' | 'table' | 'form' | 'pagelayout' | 'textinput' | 'textarea' | 'button' | 'snackbar' | 'dateinput' | 'checkbox' | 'radiobutton' | 'select' | 'switch' | 'badge' | 'instructions';
 
 interface ShowcaseLayoutProps {
   children: React.ReactNode;
@@ -31,7 +31,7 @@ interface ShowcaseLayoutProps {
 
 export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({ children, activeTab, onTabChange, version }) => {
   const navItems: { label: string; tab: TabType; icon: React.ReactNode }[] = [
-    { label: 'VSAI Login', tab: 'login', icon: <LogIn size={16} /> },
+    { label: 'VSAI Page Login', tab: 'pagelogin', icon: <LogIn size={16} /> },
     { label: 'VSAI Toolbar', tab: 'toolbar', icon: <SquareMenu size={16} /> },
     { label: 'VSAI Table', tab: 'table', icon: <Table size={16} /> },
     { label: 'VSAI Form', tab: 'form', icon: <FormInput size={16} /> },
@@ -117,7 +117,7 @@ export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({ children, active
             </div>
             <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              v{version || '0.0.9'} Stable
+              v{version || '0.0.4'} Stable
             </p>
           </div>
         </div>

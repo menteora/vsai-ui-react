@@ -1,1 +1,1 @@
-export const VSAI_VERSION = '0.0.3';
+export const VSAI_VERSION = '0.0.9';
