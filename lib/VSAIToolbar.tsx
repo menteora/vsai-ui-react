@@ -30,6 +30,7 @@ export const VSAIToolbarDocs: ComponentDocs = {
     { name: 'items', type: 'ToolbarItem[]', defaultValue: '[]', description: 'Voci di navigazione con icone.' },
     { name: 'user', type: 'UserProfile', defaultValue: 'undefined', description: 'Profilo utente.' },
     { name: 'theme', type: '"light" | "dark"', defaultValue: '"light"', description: 'Stile visivo.' },
+    { name: 'onAction', type: '(actionId) => void', defaultValue: '-', description: 'Callback di navigazione attivata al click sulle voci.' },
     { name: 'onThemeToggle', type: '() => void', defaultValue: 'undefined', description: 'Evento scatenato al clic sul pulsante tema.' },
     { name: 'logoUrl', type: 'string', defaultValue: '"..."', description: 'Icona del brand.' }
   ],
