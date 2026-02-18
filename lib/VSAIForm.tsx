@@ -12,6 +12,7 @@ export interface VSAIFormField {
   type: 'text' | 'textarea' | 'date' | 'checkbox' | 'radio';
   placeholder?: string;
   required?: boolean;
+  disabled?: boolean;
   /** Larghezza del campo nel form: 'full' occupa l'intera riga, 'half' la metà. */
   width?: 'full' | 'half';
   /** Messaggio d'errore personalizzato se il campo è vuoto. */
@@ -24,38 +25,50 @@ export interface VSAIFormProps {
   fields?: VSAIFormField[];
   submitLabel?: string;
   theme?: Theme;
+  /** Valori iniziali per pre-popolare il form (utile per edit o view mode). */
+  defaultValues?: Record<string, any>;
+  /** Se true, il form diventa di sola lettura: i campi sono disabilitati e il bottone è nascosto. */
+  readOnly?: boolean;
   onSubmit?: (values: Record<string, any>) => void;
 }
 
 export const VSAIFormDocs: ComponentDocs = {
   name: "VSAIForm",
-  description: "Un contenitore di alto livello che renderizza automaticamente un gruppo di input e gestisce la raccolta dei dati con validazione integrata e layout a due colonne opzionale.",
+  description: "Un contenitore di alto livello che renderizza automaticamente un gruppo di input. Supporta modalità 'readOnly' per la visualizzazione di dettagli.",
   props: [
     { name: 'title', type: 'string', defaultValue: '""', description: 'Titolo del form.' },
-    { name: 'description', type: 'string', defaultValue: '""', description: 'Descrizione opzionale.' },
-    { name: 'fields', type: 'VSAIFormField[]', defaultValue: '[]', description: 'Configurazione dei campi. Supporta width="half".' },
+    { name: 'fields', type: 'VSAIFormField[]', defaultValue: '[]', description: 'Configurazione dei campi.' },
+    { name: 'defaultValues', type: 'object', defaultValue: '{}', description: 'Dati pre-caricati.' },
+    { name: 'readOnly', type: 'boolean', defaultValue: 'false', description: 'Disabilita edit e nasconde submit.' },
     { name: 'submitLabel', type: 'string', defaultValue: '"Submit"', description: 'Testo del pulsante di invio.' },
     { name: 'theme', type: '"light" | "dark"', defaultValue: '"light"', description: 'Tema grafico.' },
-    { name: 'onSubmit', type: '(values) => void', defaultValue: '-', description: 'Callback invocata all\'invio del form se valido.' }
+    { name: 'onSubmit', type: '(values) => void', defaultValue: '-', description: 'Callback di invio.' }
   ],
   exampleProps: {
-    title: "Registrazione Anagrafica",
-    description: "Compila i campi sottostanti. Nota come Nome e Cognome siano affiancati.",
+    title: "Dettaglio Profilo",
+    description: "Visualizzazione dati in modalità sola lettura.",
     fields: [
-      { id: 'firstName', label: 'Nome', type: 'text', width: 'half', placeholder: 'Mario', required: true },
-      { id: 'lastName', label: 'Cognome', type: 'text', width: 'half', placeholder: 'Rossi', required: true },
-      { id: 'birthDate', label: 'Data di Nascita', type: 'date', width: 'half', required: true },
-      { id: 'bio', label: 'Biografia Breve', type: 'textarea', placeholder: 'Parlaci di te...', required: false }
+      { id: 'firstName', label: 'Nome', type: 'text', width: 'half' },
+      { id: 'lastName', label: 'Cognome', type: 'text', width: 'half' },
+      { id: 'role', label: 'Ruolo', type: 'text', width: 'full' },
+      { id: 'notes', label: 'Note', type: 'textarea' }
     ],
-    submitLabel: "Salva Profilo",
-    onSubmit: "(values) => alert('Dati inviati: ' + JSON.stringify(values, null, 2))"
+    defaultValues: {
+      firstName: "Giulia",
+      lastName: "Bianchi",
+      role: "Senior Developer",
+      notes: "Dipendente dell'anno 2024."
+    },
+    readOnly: true,
+    submitLabel: "Salva",
+    onSubmit: "(values) => alert(JSON.stringify(values))"
   }
 };
 
 export const VSAIForm: React.FC<VSAIFormProps> = ({
-  title, description, fields = [], submitLabel = "Submit", theme = 'light', onSubmit
+  title, description, fields = [], submitLabel = "Submit", theme = 'light', defaultValues = {}, readOnly = false, onSubmit
 }) => {
-  const [values, setValues] = useState<Record<string, any>>({});
+  const [values, setValues] = useState<Record<string, any>>(defaultValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const isDark = theme === 'dark';
 
@@ -109,7 +122,8 @@ export const VSAIForm: React.FC<VSAIFormProps> = ({
             key: f.id,
             label: f.label,
             placeholder: f.placeholder,
-            required: f.required,
+            required: !readOnly && f.required, // Nasconde asterisco se readonly
+            disabled: readOnly || f.disabled, // Forza disabled se readonly
             width: f.width || 'full',
             theme: theme,
             value: values[f.id] || '',
@@ -128,15 +142,17 @@ export const VSAIForm: React.FC<VSAIFormProps> = ({
           return <VSAITextInput {...commonProps} />;
         })}
         
-        <div className="pt-4 w-full">
-          <VSAIButton 
-            label={submitLabel} 
-            theme={theme} 
-            fullWidth 
-            onClick={handleSubmit}
-            variant="primary"
-          />
-        </div>
+        {!readOnly && (
+          <div className="pt-4 w-full">
+            <VSAIButton 
+              label={submitLabel} 
+              theme={theme} 
+              fullWidth 
+              onClick={handleSubmit}
+              variant="primary"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
