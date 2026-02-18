@@ -30,8 +30,8 @@ export interface TableAction {
 
 export interface TablePagination {
   currentPage: number;
-  totalPages: number;
   onPageChange: (page: number) => void;
+  totalPages?: number;
 }
 
 export interface PropDefinition {

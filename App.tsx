@@ -290,7 +290,7 @@ const App: React.FC = () => {
                 <div className="p-2 bg-slate-900 text-white rounded-xl"><Layers size={20} /></div>
                 API Reference
               </h3>
-              <PropsTable props={activeDocs.props} />
+              <PropsTable props={activeDocs.props} componentName={activeDocs.name} />
             </section>
           </div>
         </LiveProvider>
