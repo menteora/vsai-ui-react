@@ -14,5 +14,6 @@ export * from './VSAIPageLayout';
 export * from './VSAISelect';
 export * from './VSAISwitch';
 export * from './VSAIBadge';
+export * from './VSAIQRCodeScanner';
 export * from './types';
 export * from './constants';

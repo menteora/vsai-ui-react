@@ -17,10 +17,11 @@ import {
   Activity,
   List,
   ToggleLeft,
-  Tag
+  Tag,
+  QrCode
 } from 'lucide-react';
 
-type TabType = 'login' | 'toolbar' | 'table' | 'form' | 'pagelayout' | 'textinput' | 'textarea' | 'button' | 'snackbar' | 'dateinput' | 'checkbox' | 'radiobutton' | 'select' | 'switch' | 'badge' | 'instructions';
+type TabType = 'pagelogin' | 'toolbar' | 'table' | 'form' | 'pagelayout' | 'textinput' | 'textarea' | 'button' | 'snackbar' | 'dateinput' | 'checkbox' | 'radiobutton' | 'select' | 'switch' | 'badge' | 'qrcode' | 'instructions';
 
 interface ShowcaseLayoutProps {
   children: React.ReactNode;
@@ -31,11 +32,12 @@ interface ShowcaseLayoutProps {
 
 export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({ children, activeTab, onTabChange, version }) => {
   const navItems: { label: string; tab: TabType; icon: React.ReactNode }[] = [
-    { label: 'VSAI Login', tab: 'login', icon: <LogIn size={16} /> },
+    { label: 'VSAI Page Login', tab: 'pagelogin', icon: <LogIn size={16} /> },
     { label: 'VSAI Toolbar', tab: 'toolbar', icon: <SquareMenu size={16} /> },
     { label: 'VSAI Table', tab: 'table', icon: <Table size={16} /> },
     { label: 'VSAI Form', tab: 'form', icon: <FormInput size={16} /> },
     { label: 'VSAI Page Layout', tab: 'pagelayout', icon: <Layout size={16} /> },
+    { label: 'QR Scanner', tab: 'qrcode', icon: <QrCode size={16} /> },
   ];
 
   const basicItems: { label: string; tab: TabType; icon: React.ReactNode }[] = [

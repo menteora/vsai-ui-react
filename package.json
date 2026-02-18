@@ -1,7 +1,6 @@
-
 {
   "name": "@menteora/vsai-ui-react",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "A high-end, professional React component library with built-in Mock Runner for browser-based functional testing.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -31,6 +30,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "lucide-react": "^0.475.0"
+  },
+  "dependencies": {
+    "jsqr": "^1.4.0"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

@@ -26,7 +26,7 @@ const generateLiveJSX = (componentName: string, props: Record<string, any>, prel
   const propsStrings: string[] = [];
   const currentTheme = props.theme || 'light';
   
-  const knownHandlers = ['handleValidation', 'handleLogin', 'handleNavigation', 'handleAction', 'onClose', 'onSubmit', 'onThemeToggle', 'toggleGlobalTheme'];
+  const knownHandlers = ['handleValidation', 'handleLogin', 'handleNavigation', 'handleAction', 'onClose', 'onSubmit', 'onThemeToggle', 'toggleGlobalTheme', 'onScan'];
 
   Object.entries(props).forEach(([key, value]) => {
     if (value === undefined || value === null) return;
@@ -62,6 +62,45 @@ const generateLiveJSX = (componentName: string, props: Record<string, any>, prel
     }
   });
 
+  // Special template for QR Scanner to show result
+  if (componentName === 'VSAIQRCodeScanner') {
+    return `
+const Demo = () => {
+  const theme = "${currentTheme}";
+  
+  ${prelude || ''}
+  
+  return (
+    <>
+      <div className="flex flex-col items-center gap-4 mb-8">
+         <div className="p-4 rounded-xl border border-dashed text-center w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+            {data ? (
+               <div className="text-emerald-600 font-bold flex flex-col items-center gap-2">
+                 <CheckCircle2 size={32} />
+                 QR Letto: {data}
+               </div>
+            ) : (
+               <div className="text-slate-400 flex flex-col items-center gap-2">
+                 <Scan size={32} />
+                 In attesa di scansione...
+               </div>
+            )}
+         </div>
+         <VSAIButton label={show ? "Scanner Aperto" : "Apri Scanner"} onClick={() => setShow(true)} disabled={show} />
+      </div>
+
+      <${componentName} 
+        ${propsStrings.join('\n        ')}
+      />
+    </>
+  );
+};
+
+render(<Demo />);
+`.trim();
+  }
+
+  // Default template for other components
   return `
 const Demo = () => {
   const theme = "${currentTheme}";
@@ -69,9 +108,11 @@ const Demo = () => {
   ${prelude || ''}
   
   return (
-    <${componentName} 
-      ${propsStrings.join('\n      ')}
-    />
+    <div className="w-full">
+      <${componentName} 
+        ${propsStrings.join('\n        ')}
+      />
+    </div>
   );
 };
 
@@ -150,13 +191,13 @@ const ResponsivePreview: React.FC<{
 };
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<any>('login');
+  const [activeTab, setActiveTab] = useState<any>('pagelogin');
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [globalTheme, setGlobalTheme] = useState<VSAI.Theme>('light');
 
   const activeDocs = useMemo(() => {
     const docsMap: Record<string, VSAI.ComponentDocs> = {
-      login: VSAI.VSAILoginDocs, 
+      pagelogin: VSAI.VSAILoginDocs, 
       toolbar: VSAI.VSAIToolbarDocs, 
       table: VSAI.VSAITableDocs, 
       form: VSAI.VSAIFormDocs,
@@ -170,7 +211,8 @@ const App: React.FC = () => {
       radiobutton: VSAI.VSAIRadioButtonDocs,
       select: VSAI.VSAISelectDocs,
       switch: VSAI.VSAISwitchDocs,
-      badge: VSAI.VSAIBadgeDocs
+      badge: VSAI.VSAIBadgeDocs,
+      qrcode: VSAI.VSAIQRCodeScannerDocs
     };
     return docsMap[activeTab] || VSAI.VSAILoginDocs;
   }, [activeTab]);
@@ -183,14 +225,14 @@ const App: React.FC = () => {
       theme: globalTheme
     };
     
-    if ('onThemeToggle' in (activeDocs.exampleProps || {}) || activeTab === 'login' || activeTab === 'toolbar') {
+    if ('onThemeToggle' in (activeDocs.exampleProps || {}) || activeTab === 'pagelogin' || activeTab === 'toolbar') {
       props.onThemeToggle = 'toggleGlobalTheme';
     }
 
     return generateLiveJSX(activeDocs.name, props, activeDocs.prelude);
   }, [activeDocs, globalTheme, activeTab]);
 
-  const isFullPageComponent = activeTab === 'login' || activeTab === 'pagelayout';
+  const isFullPageComponent = activeTab === 'pagelogin' || activeTab === 'pagelayout';
 
   if (activeTab === 'instructions') {
     return (
