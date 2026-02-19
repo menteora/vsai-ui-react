@@ -32,7 +32,7 @@ interface ShowcaseLayoutProps {
 
 export const ShowcaseLayout: React.FC<ShowcaseLayoutProps> = ({ children, activeTab, onTabChange, version }) => {
   const navItems: { label: string; tab: TabType; icon: React.ReactNode }[] = [
-    { label: 'VSAI Page Login', tab: 'pagelogin', icon: <LogIn size={16} /> },
+    { label: 'VSAI Login', tab: 'pagelogin', icon: <LogIn size={16} /> },
     { label: 'VSAI Toolbar', tab: 'toolbar', icon: <SquareMenu size={16} /> },
     { label: 'VSAI Table', tab: 'table', icon: <Table size={16} /> },
     { label: 'VSAI Form', tab: 'form', icon: <FormInput size={16} /> },
