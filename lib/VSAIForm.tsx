@@ -30,14 +30,17 @@ export interface VSAIFormProps {
   /** Se true, il form diventa di sola lettura: i campi sono disabilitati e il bottone è nascosto. */
   readOnly?: boolean;
   onSubmit?: (values: Record<string, any>) => void;
+  /** Contenuto personalizzato (React Node) da renderizzare tra i campi generati e il footer. */
+  children?: React.ReactNode;
 }
 
 export const VSAIFormDocs: ComponentDocs = {
   name: "VSAIForm",
-  description: "Un contenitore di alto livello che renderizza automaticamente un gruppo di input. Supporta modalità 'readOnly' per la visualizzazione di dettagli.",
+  description: "Un contenitore di alto livello che renderizza automaticamente un gruppo di input. Supporta modalità 'readOnly' e iniezione di componenti custom tramite children.",
   props: [
     { name: 'title', type: 'string', defaultValue: '""', description: 'Titolo del form.' },
     { name: 'fields', type: 'VSAIFormField[]', defaultValue: '[]', description: 'Configurazione dei campi.' },
+    { name: 'children', type: 'ReactNode', defaultValue: '-', description: 'Elementi custom da inserire prima del tasto invio.' },
     { name: 'defaultValues', type: 'object', defaultValue: '{}', description: 'Dati pre-caricati.' },
     { name: 'readOnly', type: 'boolean', defaultValue: 'false', description: 'Disabilita edit e nasconde submit.' },
     { name: 'submitLabel', type: 'string', defaultValue: '"Submit"', description: 'Testo del pulsante di invio.' },
@@ -45,28 +48,22 @@ export const VSAIFormDocs: ComponentDocs = {
     { name: 'onSubmit', type: '(values) => void', defaultValue: '-', description: 'Callback di invio.' }
   ],
   exampleProps: {
-    title: "Dettaglio Profilo",
-    description: "Visualizzazione dati in modalità sola lettura.",
+    title: "Richiesta Ferie",
+    description: "Compila il modulo o usa il componente custom sottostante.",
     fields: [
-      { id: 'firstName', label: 'Nome', type: 'text', width: 'half' },
-      { id: 'lastName', label: 'Cognome', type: 'text', width: 'half' },
-      { id: 'role', label: 'Ruolo', type: 'text', width: 'full' },
-      { id: 'notes', label: 'Note', type: 'textarea' }
+      { id: 'employee', label: 'Nome Dipendente', type: 'text', width: 'half' },
+      { id: 'date', label: 'Data Inizio', type: 'date', width: 'half' }
     ],
-    defaultValues: {
-      firstName: "Giulia",
-      lastName: "Bianchi",
-      role: "Senior Developer",
-      notes: "Dipendente dell'anno 2024."
-    },
-    readOnly: true,
-    submitLabel: "Salva",
+    children: `{<div className="w-full p-4 bg-blue-50 dark:bg-slate-800 rounded-xl border border-blue-100 dark:border-slate-700 text-sm text-blue-800 dark:text-blue-300">
+      <strong>Nota:</strong> I componenti custom passati come children vengono renderizzati qui.
+    </div>}`,
+    submitLabel: "Invia Richiesta",
     onSubmit: "(values) => alert(JSON.stringify(values))"
   }
 };
 
 export const VSAIForm: React.FC<VSAIFormProps> = ({
-  title, description, fields = [], submitLabel = "Submit", theme = 'light', defaultValues = {}, readOnly = false, onSubmit
+  title, description, fields = [], submitLabel = "Submit", theme = 'light', defaultValues = {}, readOnly = false, onSubmit, children
 }) => {
   const [values, setValues] = useState<Record<string, any>>(defaultValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -141,6 +138,12 @@ export const VSAIForm: React.FC<VSAIFormProps> = ({
           
           return <VSAITextInput {...commonProps} />;
         })}
+        
+        {children && (
+          <div className="w-full">
+            {children}
+          </div>
+        )}
         
         {!readOnly && (
           <div className="pt-4 w-full">
