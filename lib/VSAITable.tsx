@@ -18,7 +18,7 @@ export interface VSAITableProps {
   /** Callback invocata quando un'azione viene cliccata. */
   onAction?: (actionId: string, row: any) => void;
   /** Se true, mostra uno spinner di caricamento al posto dei dati. */
-  loading?: boolean;
+  isLoading?: boolean;
 }
 
 export const VSAITableDocs: ComponentDocs = {
@@ -30,7 +30,7 @@ export const VSAITableDocs: ComponentDocs = {
     { name: 'pagination', type: 'TablePagination', defaultValue: 'undefined', description: 'Configurazione paginazione.' },
     { name: 'actions', type: 'TableAction[]', defaultValue: '[]', description: 'Azioni con icone.' },
     { name: 'theme', type: '"light" | "dark"', defaultValue: '"light"', description: 'Tema visuale.' },
-    { name: 'loading', type: 'boolean', defaultValue: 'false', description: 'Stato di caricamento dati.' }
+    { name: 'isLoading', type: 'boolean', defaultValue: 'false', description: 'Stato di caricamento dati.' }
   ],
   prelude: `const [page, setPage] = useState(1);
 const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +47,7 @@ const toggleLoad = () => setIsLoading(!isLoading);`,
       { name: 'John Doe', email: 'john@example.com', status: 'Attivo' },
       { name: 'Sarah Connor', email: 'sarah@resistance.io', status: 'Inattivo' }
     ],
-    loading: "{isLoading}",
+    isLoading: "{isLoading}",
     actions: [
       { id: 'view', label: 'Vedi', variant: 'ghost', icon: '{<Eye size={16} />}' },
       { id: 'edit', label: 'Modifica', variant: 'primary', icon: '{<Pencil size={14} />}' }
@@ -63,7 +63,7 @@ export const VSAITable: React.FC<VSAITableProps> = ({
   pagination,
   theme = 'light',
   onAction,
-  loading = false
+  isLoading = false
 }) => {
   const isDark = theme === 'dark';
 
@@ -83,7 +83,7 @@ export const VSAITable: React.FC<VSAITableProps> = ({
   );
 
   const PaginationControls = () => {
-    if (!pagination || loading) return null;
+    if (!pagination || isLoading) return null;
 
     const { currentPage, totalPages, onPageChange } = pagination;
     const hasPrev = currentPage > 1;
@@ -152,7 +152,7 @@ export const VSAITable: React.FC<VSAITableProps> = ({
               </tr>
             </thead>
             <tbody className={`divide-y ${isDark ? 'divide-slate-800' : 'divide-slate-100'}`}>
-              {loading ? (
+              {isLoading ? (
                 <tr>
                   <td colSpan={columns.length + (actions.length > 0 ? 1 : 0)} className="px-6 py-4">
                     <LoadingState />
@@ -202,7 +202,7 @@ export const VSAITable: React.FC<VSAITableProps> = ({
 
       {/* Mobile View */}
       <div className="md:hidden space-y-4">
-        {loading ? (
+        {isLoading ? (
           <div className={`rounded-2xl border p-5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
             <LoadingState />
           </div>
@@ -251,7 +251,7 @@ export const VSAITable: React.FC<VSAITableProps> = ({
         )}
 
         {/* Pagination Footer (Mobile - Standalone Card) */}
-        {pagination && !loading && (
+        {pagination && !isLoading && (
           <div className={`rounded-2xl border transition-all duration-300 ${
             isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
           }`}>

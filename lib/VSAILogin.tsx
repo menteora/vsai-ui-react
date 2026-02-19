@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Theme, ComponentDocs } from './types';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Loader2 } from 'lucide-react';
 
 export interface VSAILoginProps {
   /** Il titolo principale visualizzato in alto nella card di login. */
@@ -18,6 +18,8 @@ export interface VSAILoginProps {
   onLogin?: (email: string, pass: string) => void;
   /** Callback attivata per cambiare tema. */
   onThemeToggle?: () => void;
+  /** Se true, disabilita gli input e mostra un caricamento sul pulsante. */
+  isLoading?: boolean;
 }
 
 /**
@@ -32,13 +34,23 @@ export const VSAILoginDocs: ComponentDocs = {
     { name: 'logoUrl', type: 'string', defaultValue: '"https://picsum..."', description: 'URL del logo aziendale.' },
     { name: 'primaryColor', type: 'string', defaultValue: '"#3b82f6"', description: 'Colore d\'accento.' },
     { name: 'theme', type: '"light" | "dark"', defaultValue: '"light"', description: 'Tema visuale.' },
+    { name: 'isLoading', type: 'boolean', defaultValue: 'false', description: 'Stato di caricamento.' },
     { name: 'onThemeToggle', type: '() => void', defaultValue: 'undefined', description: 'Evento scatenato al clic sul pulsante tema.' },
     { name: 'onLogin', type: '(email, pass) => void', defaultValue: 'undefined', description: 'Callback di login.' },
   ],
-  prelude: `const handleLogin = (e, p) => alert("Accesso richiesto per: " + e);`,
+  prelude: `const [loading, setLoading] = useState(false);
+const handleLogin = (e, p) => {
+  setLoading(true);
+  // Simula chiamata API
+  setTimeout(() => {
+    alert("Accesso riuscito per: " + e);
+    setLoading(false);
+  }, 2000);
+};`,
   exampleProps: {
     title: "VSAI Cloud Access",
     subtitle: "Inserisci la tua email e password per continuare.",
+    isLoading: "{loading}",
     onLogin: "handleLogin",
     onThemeToggle: "toggleGlobalTheme"
   }
@@ -51,7 +63,8 @@ export const VSAILogin: React.FC<VSAILoginProps> = ({
   primaryColor = "#3b82f6",
   theme = 'light',
   onLogin,
-  onThemeToggle
+  onThemeToggle,
+  isLoading = false
 }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +72,9 @@ export const VSAILogin: React.FC<VSAILoginProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin?.(email, password);
+    if (!isLoading) {
+      onLogin?.(email, password);
+    }
   };
 
   return (
@@ -94,13 +109,14 @@ export const VSAILogin: React.FC<VSAILoginProps> = ({
                 id="email"
                 type="email"
                 required
+                disabled={isLoading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`block w-full rounded-2xl border px-4 py-3.5 text-sm font-medium transition-all outline-none ${
                   isDark 
                     ? 'bg-slate-800/50 border-slate-700 text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
                     : 'bg-white border-slate-200 text-slate-900 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5'
-                }`}
+                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder="nome@azienda.it"
               />
             </div>
@@ -110,13 +126,14 @@ export const VSAILogin: React.FC<VSAILoginProps> = ({
                 id="password"
                 type="password"
                 required
+                disabled={isLoading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={`block w-full rounded-2xl border px-4 py-3.5 text-sm font-medium transition-all outline-none ${
                   isDark 
                     ? 'bg-slate-800/50 border-slate-700 text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
                     : 'bg-white border-slate-200 text-slate-900 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5'
-                }`}
+                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder="••••••••"
               />
             </div>
@@ -125,11 +142,19 @@ export const VSAILogin: React.FC<VSAILoginProps> = ({
           <div className="pt-2">
             <button
               type="submit"
+              disabled={isLoading}
               style={{ backgroundColor: primaryColor }}
-              className="group relative flex w-full justify-center rounded-2xl px-4 py-4 text-sm font-bold text-white shadow-xl hover:opacity-90 active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden"
+              className={`group relative flex w-full justify-center items-center gap-2 rounded-2xl px-4 py-4 text-sm font-bold text-white shadow-xl hover:opacity-90 active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden ${isLoading ? 'cursor-not-allowed opacity-80' : ''}`}
             >
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-              <span className="relative">Accedi</span>
+              {!isLoading && <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>}
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  <span>Accesso in corso...</span>
+                </>
+              ) : (
+                <span className="relative">Accedi</span>
+              )}
             </button>
           </div>
         </form>
