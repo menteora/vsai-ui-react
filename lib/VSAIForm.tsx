@@ -116,7 +116,6 @@ export const VSAIForm: React.FC<VSAIFormProps> = ({
       <div className="flex flex-wrap gap-y-6 gap-x-[24px]">
         {fields.map((f) => {
           const commonProps = {
-            key: f.id,
             label: f.label,
             placeholder: f.placeholder,
             required: !readOnly && f.required, // Nasconde asterisco se readonly
@@ -129,14 +128,14 @@ export const VSAIForm: React.FC<VSAIFormProps> = ({
           };
 
           if (f.type === 'textarea') {
-            return <VSAITextarea {...commonProps} />;
+            return <VSAITextarea key={f.id} {...commonProps} />;
           }
 
           if (f.type === 'date') {
-            return <VSAIDateInput {...commonProps} />;
+            return <VSAIDateInput key={f.id} {...commonProps} />;
           }
           
-          return <VSAITextInput {...commonProps} />;
+          return <VSAITextInput key={f.id} {...commonProps} />;
         })}
         
         {children && (
